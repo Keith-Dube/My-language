@@ -1,27 +1,41 @@
-COMPILER $CompilerName
-
-// Driver program for the generated scanner + parser.
-// Coco/R will replace $CompilerName with the grammar name automatically.
+/*-------------------------------------------------------------------------
+K.java -- the compiler driver for K
+Coco/R for Java
+Extended for K language by Keith
+-------------------------------------------------------------------------*/
 
 import java.io.*;
 
-public class $CompilerName {
-    public static void main(String[] args) {
-        String fileName;
-        if (args.length > 0) fileName = args[0];
-        else {
-            System.out.println("Usage: java " + "$CompilerName" + " <source-file>");
-            return;
-        }
+public class -->class {
 
-        Scanner scanner = new Scanner(fileName);
-        Parser parser = new Parser(scanner);
-        parser.Parse();
+  public static void main(String[] args) {
+      if (args.length != 1) {
+          System.err.println("Usage: java -->class <sourcefile.k>");
+          System.exit(1);
+      }
 
-        if (parser.errors.count == 0) {
-            System.out.println("Parsing completed successfully.");
-        } else {
-            System.out.println(parser.errors.count + " errors detected.");
-        }
-    }
+      String inputName = args[0];
+
+      try {
+          // Initialize scanner and parser
+          Scanner scanner = new Scanner(inputName);
+          Parser parser = new Parser(scanner);
+
+          // Start parsing
+          parser.Parse();
+
+          // Check for errors (assuming parser has an errors field)
+          if (parser.errors != null && parser.errors.count > 0) {
+              System.err.println("Parsing finished with " + parser.errors.count + " errors.");
+          } else {
+              System.out.println("Parsing completed successfully.");
+          }
+
+      } catch (FatalError fe) {
+          System.err.println("Fatal Error: " + fe.getMessage());
+      } catch (IOException ioe) {
+          System.err.println("IO Error: " + ioe.getMessage());
+      }
+  }
 }
+$$$

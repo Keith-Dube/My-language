@@ -54,7 +54,7 @@ if errorlevel 1 (
 )
 
 REM --------------------------------------------
-REM Move generated Java files
+REM Move generated Java files to src
 REM --------------------------------------------
 echo Moving generated Java files to /src ...
 move /Y "%ROOT%\K\Parser.java" "%SRC_DIR%" >nul 2>nul
@@ -69,7 +69,7 @@ echo Compiling Java files in dependency order...
 REM Clear previous errors
 if exist "%ERRORS%" del "%ERRORS%"
 
-REM Compile the first file (no classpath needed)
+REM Compile FatalError first
 echo Compiling FatalError.java ...
 javac -d "%BUILD_DIR%" "%SRC_DIR%\FatalError.java" 2>> "%ERRORS%"
 if errorlevel 1 (
@@ -85,6 +85,7 @@ for %%f in (
     StartStates.java
     Scanner.java
     Parser.java
+    %GRAM%.java
 ) do (
     echo Compiling %%f ...
     javac -cp "%BUILD_DIR%" -d "%BUILD_DIR%" "%SRC_DIR%\%%f" 2>> "%ERRORS%"
@@ -95,7 +96,7 @@ for %%f in (
 )
 
 echo.
-echo  BUILD SUCCESSFUL 
+echo BUILD SUCCESSFUL 
 echo.
 
 :end
