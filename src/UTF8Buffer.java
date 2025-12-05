@@ -1,8 +1,7 @@
-
 //-----------------------------------------------------------------------------------
 // UTF8Buffer
 //-----------------------------------------------------------------------------------
-class UTF8Buffer extends Buffer {
+public class UTF8Buffer extends Buffer {
 	UTF8Buffer(Buffer b) { super(b); }
 
 	public int Read() {

@@ -62,23 +62,42 @@ move /Y "%ROOT%\K\Scanner.java" "%SRC_DIR%" >nul 2>nul
 move /Y "%ROOT%\K\%GRAM%.java" "%SRC_DIR%" >nul 2>nul
 
 REM --------------------------------------------
-REM Compile
+REM Compile Java files in dependency order
 REM --------------------------------------------
-echo Compiling Java files...
+echo Compiling Java files in dependency order...
+
+REM Clear previous errors
 if exist "%ERRORS%" del "%ERRORS%"
 
-for %%f in ("%SRC_DIR%\*.java") do (
-    javac -d "%BUILD_DIR%" "%%f" 2>> "%ERRORS%"
-)
-
-if %ERRORLEVEL% NEQ 0 (
-    echo ERROR: Compilation failed — see build_errors.txt
+REM Compile the first file (no classpath needed)
+echo Compiling FatalError.java ...
+javac -d "%BUILD_DIR%" "%SRC_DIR%\FatalError.java" 2>> "%ERRORS%"
+if errorlevel 1 (
+    echo ERROR: Compilation failed on FatalError.java — see build_errors.txt
     goto end
 )
 
+REM Compile remaining files using -cp to see already compiled classes
+for %%f in (
+    Buffer.java
+    UTF8Buffer.java
+    Token.java
+    StartStates.java
+    Scanner.java
+    Parser.java
+) do (
+    echo Compiling %%f ...
+    javac -cp "%BUILD_DIR%" -d "%BUILD_DIR%" "%SRC_DIR%\%%f" 2>> "%ERRORS%"
+    if errorlevel 1 (
+        echo ERROR: Compilation failed on %%f — see build_errors.txt
+        goto end
+    )
+)
+
 echo.
-echo ✔ BUILD SUCCESSFUL — output in /build
+echo  BUILD SUCCESSFUL 
 echo.
 
 :end
-pause
+
+

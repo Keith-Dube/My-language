@@ -1,4 +1,4 @@
-class Token {
+public class Token {
 	public int kind;    // token kind
 	public int pos;     // token position in bytes in the source text (starting at 0)
 	public int charPos; // token position in characters in the source text (starting at 0)

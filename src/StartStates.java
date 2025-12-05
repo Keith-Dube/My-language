@@ -1,8 +1,7 @@
-
 //-----------------------------------------------------------------------------------
 // StartStates  -- maps characters to start states of tokens
 //-----------------------------------------------------------------------------------
-class StartStates {
+public class StartStates {
 	private static class Elem {
 		public int key, val;
 		public Elem next;
