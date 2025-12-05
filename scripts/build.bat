@@ -59,7 +59,6 @@ REM --------------------------------------------
 echo Moving generated Java files to /src ...
 move /Y "%ROOT%\K\Parser.java" "%SRC_DIR%" >nul 2>nul
 move /Y "%ROOT%\K\Scanner.java" "%SRC_DIR%" >nul 2>nul
-move /Y "%ROOT%\K\%GRAM%.java" "%SRC_DIR%" >nul 2>nul
 
 REM --------------------------------------------
 REM Compile Java files in dependency order
