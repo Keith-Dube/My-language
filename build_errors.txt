@@ -1,0 +1,59 @@
+C:\Users\NF\Personal Projects\Kai\src\Parser.java:16: error: cannot find symbol
+	public Token t;    // last recognized token
+	       ^
+  symbol:   class Token
+  location: class Parser
+C:\Users\NF\Personal Projects\Kai\src\Parser.java:17: error: cannot find symbol
+	public Token la;   // lookahead token
+	       ^
+  symbol:   class Token
+  location: class Parser
+C:\Users\NF\Personal Projects\Kai\src\Parser.java:20: error: cannot find symbol
+	public Scanner scanner;
+	       ^
+  symbol:   class Scanner
+  location: class Parser
+C:\Users\NF\Personal Projects\Kai\src\Parser.java:25: error: cannot find symbol
+	public Parser(Scanner scanner) {
+	              ^
+  symbol:   class Scanner
+  location: class Parser
+C:\Users\NF\Personal Projects\Kai\src\Parser.java:747: error: cannot find symbol
+		la = new Token();
+		         ^
+  symbol:   class Token
+  location: class Parser
+5 errors
+C:\Users\NF\Personal Projects\Kai\src\Scanner.java:56: error: cannot find symbol
+			throw new FatalError("Could not open file " + fileName);
+			          ^
+  symbol:   class FatalError
+  location: class Buffer
+C:\Users\NF\Personal Projects\Kai\src\Scanner.java:80: error: cannot find symbol
+				throw new FatalError(e.getMessage());
+				          ^
+  symbol:   class FatalError
+  location: class Buffer
+C:\Users\NF\Personal Projects\Kai\src\Scanner.java:131: error: cannot find symbol
+			throw new FatalError("buffer out of bounds access, position: " + value);
+			          ^
+  symbol:   class FatalError
+  location: class Buffer
+C:\Users\NF\Personal Projects\Kai\src\Scanner.java:142: error: cannot find symbol
+				throw new FatalError(e.getMessage());
+				          ^
+  symbol:   class FatalError
+  location: class Buffer
+C:\Users\NF\Personal Projects\Kai\src\Scanner.java:168: error: cannot find symbol
+		catch (IOException ioex) { throw new FatalError(ioex.getMessage()); }
+		                                     ^
+  symbol:   class FatalError
+  location: class Buffer
+C:\Users\NF\Personal Projects\Kai\src\Scanner.java:342: error: cannot find symbol
+				throw new FatalError("Illegal byte order mark at start of file");
+				          ^
+  symbol:   class FatalError
+  location: class Scanner
+Note: C:\Users\NF\Personal Projects\Kai\src\Scanner.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+6 errors

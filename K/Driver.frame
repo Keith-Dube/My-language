@@ -1,0 +1,27 @@
+COMPILER $CompilerName
+
+// Driver program for the generated scanner + parser.
+// Coco/R will replace $CompilerName with the grammar name automatically.
+
+import java.io.*;
+
+public class $CompilerName {
+    public static void main(String[] args) {
+        String fileName;
+        if (args.length > 0) fileName = args[0];
+        else {
+            System.out.println("Usage: java " + "$CompilerName" + " <source-file>");
+            return;
+        }
+
+        Scanner scanner = new Scanner(fileName);
+        Parser parser = new Parser(scanner);
+        parser.Parse();
+
+        if (parser.errors.count == 0) {
+            System.out.println("Parsing completed successfully.");
+        } else {
+            System.out.println(parser.errors.count + " errors detected.");
+        }
+    }
+}

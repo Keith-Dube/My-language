@@ -1,0 +1,321 @@
+COMPILER K
+
+IGNORECASE
+
+CHARACTERS
+  tab        = '\u0009'.    /* horizontal tab */
+  lf         = '\u000a'.    /* line feed */
+  cr         = '\u000d'.    /* carriage return */
+
+  zero       = '0'.
+  nonZero    = '1'..'9'.
+  digit      = zero + nonZero.
+  letter     = 'A'..'Z' + 'a'..'z'.
+  char = ANY - "'" - '\\' - cr - lf .
+  stringChar = ANY - '"' - '\\' - cr - lf .
+
+TOKENS
+  ident      = letter { letter | digit | "_" } .
+  number     = digit { digit } .
+  float   = digit { digit } "." digit { digit } .
+  char    = "'" { char } "'" .
+  string  = '"' { stringChar } '"' .
+
+COMMENTS FROM "/*" TO "*/"
+COMMENTS FROM "//" TO lf
+
+IGNORE tab + cr + lf
+
+
+/* -------------------------
+   PROGRAM STRUCTURE
+-------------------------- */
+
+PRODUCTIONS
+
+K =
+    [ PackageDecl ]
+    { ImportDecl }
+    { TopLevelDecl }
+  .
+
+PackageDecl =
+    "package" QualifiedName ";"
+  .
+
+ImportDecl =
+    "import" QualifiedName ";"
+  .
+
+QualifiedName =
+    ident { "." ident }
+  .
+
+TopLevelDecl =
+      ClassDecl
+    | RecordDecl
+    | InterfaceDecl
+    | FunDecl
+    | VarDecl ";"
+  .
+
+/* -------------------------
+   TYPES
+-------------------------- */
+
+Type =
+    BasicType [ GenericArgs ]
+  .
+
+BasicType =
+      ident
+    | "(" Type ")"
+  .
+
+GenericArgs =
+    "<" Type { "," Type } ">"
+  .
+
+/* -------------------------
+   DECLARATIONS
+-------------------------- */
+
+VarDecl =
+    ("let" | "var") ident [ ":" Type ] [ "=" Expression ]
+    
+  .
+
+FunDecl =
+    "fun" ident "(" [ ParamList ] ")" [ ":" Type ] Block
+  .
+
+ParamList =
+    Param { "," Param }
+  .
+
+Param =
+     ident [":" Type]
+  .
+
+/* -------------------------
+   CLASSES, RECORDS, INTERFACES
+-------------------------- */
+
+ClassDecl =
+    "class" ident [ GenericArgs ]
+    [ "extends" Type ]
+    [ "implements" Type { "," Type } ]
+    ClassBody
+  .
+
+ClassBody =
+    "{" { ClassMember } "}"
+  .
+
+ClassMember =
+      VarDecl ";"
+    | FunDecl
+    | OperatorDecl
+    | Statement
+  .
+
+OperatorDecl =
+    "operator" FunDecl
+  .
+
+RecordDecl =
+    "record" ident "(" FieldList ")" RecordBody
+  .
+
+FieldList =
+    Field { "," Field }
+  .
+
+Field =
+    ident [":" Type]
+  .
+
+RecordBody =
+    ";"    // compact
+  | "{" { ClassMember } "}"
+  .
+
+InterfaceDecl =
+    "interface" ident [ GenericArgs ]
+    [ "extends" Type { "," Type } ]
+    "{" { InterfaceMember } "}"
+  .
+
+InterfaceMember =
+    "fun" ident "(" [ ParamList ] ")" [ ":" Type ] ";"
+  .
+
+/* -------------------------
+   STATEMENTS
+-------------------------- */
+
+Block =
+    "{" { Statement } "}"
+  .
+
+Statement =
+      VarDecl ";"
+    | ExprStmt ";"
+    | ReturnStmt ";"
+    | IfStmt
+    | WhileStmt
+    | ForStmt
+    | WhenStmt
+    | Block
+    | ";"
+  .
+
+ExprStmt =
+    Expression
+  .
+
+ReturnStmt =
+    "return" [ Expression ]
+  .
+
+IfStmt =
+    "if" "(" Expression ")" Statement [ "else" Statement ]
+  .
+
+WhileStmt =
+    "while" "(" Expression ")" Statement
+  .
+
+ForStmt =
+    "for" "(" [ ForInit ] ";" [ Expression ] ";" [ Expression ] ")" Statement
+  .
+
+ForInit =
+      VarDecl
+    | Expression
+  .
+
+/* -------------------------
+   WHEN / PATTERN MATCHING
+-------------------------- */
+
+WhenStmt =
+    "when" "(" Expression ")" "{"
+        { Case }
+        [ Else ]
+    "}"
+  .
+
+Case =
+    "is" Pattern{ "|" Pattern} "=>" Statement
+  .
+
+Else =
+    "else" "=>" Statement
+  .
+
+Pattern =
+      Literal
+    | ident "(" [ PatternList ] ")"   // constructor pattern
+    | ident                           // variable binding
+    | "_"                              // wildcard
+  .
+
+PatternList =
+    Pattern { "," Pattern }
+  .
+
+Literal =
+      number
+    | float
+    | string
+    | char
+    | "true"
+    | "false"
+    | "null"
+  .
+
+/* -------------------------
+   EXPRESSIONS
+-------------------------- */
+
+Expression = Assignment .
+
+Assignment =
+    LogicOr [ AssignmentOp Assignment ]
+  .
+
+AssignmentOp =
+    "=" | "+=" | "-=" | "*=" | "/=" | "%="
+  .
+
+/* PRECEDENCE LADDER */
+
+LogicOr =
+    LogicAnd { "||" LogicAnd }
+  .
+
+LogicAnd =
+    BitOr { "&&" BitOr }
+  .
+
+BitOr =
+    BitXor { "|" BitXor }
+  .
+
+BitXor =
+    BitAnd { "^" BitAnd }
+  .
+
+BitAnd =
+    Equality { "&" Equality }
+  .
+
+Equality =
+    Relational { ( "==" | "!=" ) Relational }
+  .
+
+Relational =
+    Shift { ( "<" | "<=" | ">" | ">=" ) Shift }
+  .
+
+Shift =
+    Additive { ( "<<" | ">>" ) Additive }
+  .
+
+Additive =
+    Multiplicative { ( "+" | "-" ) Multiplicative }
+  .
+
+Multiplicative =
+    Unary { ( "*" | "/" | "%" ) Unary }
+  .
+
+Unary =
+      ( "++" | "--" | "+" | "-" | "!" ) Unary
+    | Postfix
+  .
+
+Postfix =
+    Primary { PostOp }
+  .
+
+PostOp =
+      "(" [ ArgList ] ")"      // call
+    | "." ident                // member access
+    | "++"                     // postfix
+    | "--"
+  .
+
+ArgList =
+    Expression { "," Expression }
+  .
+
+Primary =
+      Literal
+    | ident
+    | ident "(" [ ArgList ] ")"   // constructor call
+    | "(" Expression ")"
+  .
+
+END K.
