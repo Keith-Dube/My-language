@@ -216,8 +216,7 @@ Else =
 
 Pattern =
       Literal
-    | ident "(" [ PatternList ] ")"   // constructor pattern
-    | ident                           // variable binding
+    | ident ["(" [ PatternList ] ")"]   // variable binding or constructor pattern
     | "_"                              // wildcard
   .
 
