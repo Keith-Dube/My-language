@@ -1,3 +1,0 @@
-error: Invalid filename: C:\Users\NF\Personal Projects\Kai\src\*.java
-Usage: javac <options> <source files>
-use --help for a list of possible options
