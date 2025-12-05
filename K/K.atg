@@ -155,20 +155,20 @@ InterfaceMember =
 -------------------------- */
 
 Block =
-    "{" { Statement } "}"
+    "{" 
+        { Statement }
+        [ Expression ]
+    "}"
   .
+
 
 Statement =
       VarDecl ";"
-    | ExprStmt ";"
+    | Expression ";"
     | ReturnStmt ";"
-    | IfStmt
-    | WhileStmt
-    | ForStmt
-    | WhenStmt
-    | Block
     | ";"
   .
+
 
 ExprStmt =
     Expression
@@ -178,17 +178,20 @@ ReturnStmt =
     "return" [ Expression ]
   .
 
-IfStmt =
-    "if" "(" Expression ")" Statement [ "else" Statement ]
+IfExpr =
+    "if" "(" Expression ")" Block [ "else" Block ]
   .
 
-WhileStmt =
-    "while" "(" Expression ")" Statement
+
+WhileExpr =
+    "while" "(" Expression ")" Block
   .
 
-ForStmt =
-    "for" "(" [ ForInit ] ";" [ Expression ] ";" [ Expression ] ")" Statement
+
+ForExpr =
+    "for" "(" [ ForInit ] ";" [ Expression ] ";" [ Expression ] ")" Block
   .
+
 
 ForInit =
       VarDecl
@@ -199,7 +202,7 @@ ForInit =
    WHEN / PATTERN MATCHING
 -------------------------- */
 
-WhenStmt =
+WhenExpr =
     "when" "(" Expression ")" "{"
         { Case }
         [ Else ]
@@ -207,12 +210,13 @@ WhenStmt =
   .
 
 Case =
-    "is" Pattern{ "|" Pattern} "=>" Statement
+    "is" Pattern { "|" Pattern } "=>" Block
   .
 
 Else =
-    "else" "=>" Statement
+    "else" "=>" Block
   .
+
 
 Pattern =
       Literal
@@ -313,8 +317,13 @@ ArgList =
 Primary =
       Literal
     | ident
-    | ident "(" [ ArgList ] ")"   // constructor call
     | "(" Expression ")"
+    | Block
+    | IfExpr
+    | WhenExpr
+    | WhileExpr
+    | ForExpr
   .
+
 
 END K.
